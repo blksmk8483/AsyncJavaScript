@@ -107,6 +107,7 @@ const renderCountry = function (data, className = '') {
 // ================CONSUMING PROMISES================
 // ==================================================
 
+// // using function
 // const getCountryData = function (data) {
 //   fetch(`https://restcountries.com/v3.1/name/${data}`)
 //     .then(function (response) {
@@ -119,11 +120,32 @@ const renderCountry = function (data, className = '') {
 //     });
 // };
 
+// ==================================================
+// ================CHAINING PROMISES================
+// ==================================================
+
+// // using arrow function
 const getCountryData = function (data) {
+  // country 1
   fetch(`https://restcountries.com/v3.1/name/${data}`)
     .then(response => response.json())
-    .then(data => renderCountry(data[0]));
+    .then(data => {
+      renderCountry(data[0]);
+      const neighbour = data[0].borders?.[0];
+
+      // country 2
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+    })
+    .then(response => response.json())
+    .then(data => {
+      [data] = data;
+      renderCountry(data, 'neighbour');
+    });
 };
 
-getCountryData('portugal');
+// getCountryData('portugal');
 getCountryData('usa');
+
+// ==================================================
+// ===========HANDLIKNG REJECTED PROMISES============
+// ==================================================
