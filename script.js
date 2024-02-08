@@ -65,7 +65,7 @@ const renderCountry = function (data, className = '') {
 `;
 
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
+  // countriesContainer.style.opacity = 1;
 };
 
 // const getCountryAndNeighbour = function (data) {
@@ -124,6 +124,11 @@ const renderCountry = function (data, className = '') {
 // ================CHAINING PROMISES================
 // ==================================================
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1;
+};
+
 // // using arrow function
 const getCountryData = function (data) {
   // country 1
@@ -140,12 +145,20 @@ const getCountryData = function (data) {
     .then(data => {
       [data] = data;
       renderCountry(data, 'neighbour');
+    })
+    .catch(err => {
+      console.error(`${err} 💥💥💥`);
+      renderError(`Something went wrong 💥💥💥 ${err.message}. Try again!`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
     });
 };
-
 // getCountryData('portugal');
-getCountryData('usa');
 
 // ==================================================
 // ===========HANDLIKNG REJECTED PROMISES============
 // ==================================================
+btn.addEventListener('click', function () {
+  getCountryData('usa');
+});
