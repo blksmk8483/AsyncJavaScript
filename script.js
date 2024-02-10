@@ -208,24 +208,42 @@ btn.addEventListener('click', function () {
 // - Coordinates 3: -33.933, 18.474
 // GOOD LUCK 😀
 
-const cityAndCountryName = function (data) {
-  const city = data.city;
-  const country = data.countryName;
-  console.log(`You are in ${city}, ${country}.`);
-};
+// =============================================================================
 
-const whereAmI = function (lat, lng) {
-  fetch(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
-  )
-    .then(response => {
-      if (!response.ok)
-        throw new Error(`There was a problem: ${response.status}`);
-      return response.json();
-    })
-    .then(data => cityAndCountryName(data))
-    .catch(err => console.error(`Oh no! ${err.message}`));
-};
-whereAmI(52.508, 13.381);
-whereAmI(19.037, 72.873);
-whereAmI(-33.933, 18.474);
+// const cityAndCountryName = function (data) {
+//   const city = data.city;
+//   const country = data.countryName;
+//   console.log(`You are in ${city}, ${country}.`);
+// };
+
+// const whereAmI = function (lat, lng) {
+//   fetch(
+//     `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+//   )
+//     .then(response => {
+//       if (!response.ok)
+//         throw new Error(`There was a problem: ${response.status}`);
+//       return response.json();
+//     })
+//     .then(data => cityAndCountryName(data))
+//     .catch(err => console.error(`Oh no! ${err.message}`));
+// };
+// whereAmI(52.508, 13.381);
+// whereAmI(19.037, 72.873);
+// whereAmI(-33.933, 18.474);
+
+// ==================================================
+// ============THE EVENT LOOP IN PRACTICE============
+// ==================================================
+
+// ??? What order do they run in?
+
+console.log('Test start'); // 1
+setTimeout(() => console.log('0 sec timer'), 0); // 4
+Promise.resolve('Resolved promise 1').then(res => console.log(res)); // 3
+console.log('Test end'); // 2
+
+// 1 - top level code, outside of the calback will run first
+// 2 - this is the second line that is outside of the callback so its 2nd
+// 3 - the promise has priority because of the microtask queque (the microtask has to resolve before the other callback (the timer))
+// 4 - then finally the timer runs
