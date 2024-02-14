@@ -247,3 +247,37 @@ console.log('Test end'); // 2
 // 2 - this is the second line that is outside of the callback so its 2nd
 // 3 - the promise has priority because of the microtask queque (the microtask has to resolve before the other callback (the timer))
 // 4 - then finally the timer runs
+
+// ==================================================
+// ============BUILDING A SIMPLE PROMISE=============
+// ==================================================
+
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log('The lottery draw is happening ⏳');
+  setTimeout(function () {
+    if (Math.random() >= 0.5) {
+      resolve('You WIN!!!! 🥇');
+    } else {
+      reject(new Error('You lost your money! 😥'));
+    }
+  }, 3000);
+});
+
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+
+// Promisifying setTimeout
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+wait(2)
+  .then(() => {
+    console.log('I waited for 2 seconds');
+    return wait(1);
+  })
+  .then(() => console.log('I waited for 1 second'));
+
+Promise.resolve('abc').then(x => console.log(x));
+Promise.reject(new Error('PROBLEM:')).catch(x => console.log(x));
