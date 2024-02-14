@@ -238,10 +238,10 @@ btn.addEventListener('click', function () {
 
 // ??? What order do they run in?
 
-console.log('Test start'); // 1
-setTimeout(() => console.log('0 sec timer'), 0); // 4
-Promise.resolve('Resolved promise 1').then(res => console.log(res)); // 3
-console.log('Test end'); // 2
+// console.log('Test start'); // 1
+// setTimeout(() => console.log('0 sec timer'), 0); // 4
+// Promise.resolve('Resolved promise 1').then(res => console.log(res)); // 3
+// console.log('Test end'); // 2
 
 // 1 - top level code, outside of the calback will run first
 // 2 - this is the second line that is outside of the callback so its 2nd
@@ -252,32 +252,75 @@ console.log('Test end'); // 2
 // ============BUILDING A SIMPLE PROMISE=============
 // ==================================================
 
-const lotteryPromise = new Promise(function (resolve, reject) {
-  console.log('The lottery draw is happening ⏳');
-  setTimeout(function () {
-    if (Math.random() >= 0.5) {
-      resolve('You WIN!!!! 🥇');
-    } else {
-      reject(new Error('You lost your money! 😥'));
-    }
-  }, 3000);
-});
+// const lotteryPromise = new Promise(function (resolve, reject) {
+//   console.log('The lottery draw is happening ⏳');
+//   setTimeout(function () {
+//     if (Math.random() >= 0.5) {
+//       resolve('You WIN!!!! 🥇');
+//     } else {
+//       reject(new Error('You lost your money! 😥'));
+//     }
+//   }, 3000);
+// });
 
-lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+// lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
 
-// Promisifying setTimeout
-const wait = function (seconds) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, seconds * 1000);
+// // Promisifying setTimeout
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
+
+// wait(2)
+//   .then(() => {
+//     console.log('I waited for 2 seconds');
+//     return wait(1);
+//   })
+//   .then(() => console.log('I waited for 1 second'));
+
+// Promise.resolve('abc').then(x => console.log(x));
+// Promise.reject(new Error('PROBLEM:')).catch(x => console.log(x));
+
+// ==================================================
+// ========PROMISIFYING THE GEOLOCATION API==========
+// ==================================================
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => res(position),
+    //   err => rej(err)
+    // );
+
+    navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 };
 
-wait(2)
-  .then(() => {
-    console.log('I waited for 2 seconds');
-    return wait(1);
-  })
-  .then(() => console.log('I waited for 1 second'));
+getPosition().then(pos => console.log(pos));
 
-Promise.resolve('abc').then(x => console.log(x));
-Promise.reject(new Error('PROBLEM:')).catch(x => console.log(x));
+const cityAndCountryName = function (data) {
+  const city = data.city;
+  const country = data.countryName;
+  console.log(`You are in ${city}, ${country}.`);
+};
+
+const whereAmI = function () {
+  getPosition()
+    .then(pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+
+      return fetch(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+      );
+    })
+    .then(response => {
+      if (!response.ok)
+        throw new Error(`There was a problem: ${response.status}`);
+      return response.json();
+    })
+    .then(data => cityAndCountryName(data))
+    .catch(err => console.error(`Oh no! ${err.message}`));
+};
+
+btn.addEventListener('click', whereAmI);
