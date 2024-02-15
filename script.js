@@ -154,10 +154,10 @@ const renderCountry = function (data) {
 // // ================CHAINING PROMISES================
 // // ==================================================
 
-// const renderError = function (msg) {
-//   countriesContainer.insertAdjacentText('beforeend', msg);
-//   // countriesContainer.style.opacity = 1;
-// };
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
+};
 
 // const getJSON = function (url, errorMsg = 'Something went wrong') {
 //   return fetch(url).then(response => {
@@ -458,24 +458,49 @@ const getPosition = function () {
 };
 
 const whereAmI = async function () {
-  const pos = await getPosition();
+  try {
+    const pos = await getPosition();
 
-  const { latitude: lat, longitude: lng } = pos.coords;
+    const { latitude: lat, longitude: lng } = pos.coords;
 
-  const resGeo = await fetch(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
-  );
-  const dataGeo = await resGeo.json();
+    const resGeo = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+    );
+    if (!resGeo.ok)
+      throw new Error(
+        'What the hell! something is wrong with the location data. 💩'
+      );
+    const dataGeo = await resGeo.json();
 
-  const res = await fetch(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?${dataGeo.country}`
-  );
-  // console.log(res);
-  const data = await res.json();
-  console.log(data);
-  renderCountry(data);
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?${dataGeo.country}`
+    );
+    if (!res.ok)
+      throw new Error(
+        'What the hell! something is wrong with the country data. 💩'
+      );
+    // console.log(res);
+    const data = await res.json();
+    console.log(data);
+    renderCountry(data);
+  } catch (err) {
+    // console.error(`${err} 💥`);
+    renderError(`${err}`);
+  }
 };
 
 // whereAmI(52.508, 13.381);
 whereAmI();
 console.log('first');
+
+// ==================================================
+// ===================TRY/CATCH======================
+// ==================================================
+
+// try {
+//   let y = 1;
+//   const x = 2;
+//   y = 3;
+// } catch (err) {
+//   alert(err.message);
+// }
