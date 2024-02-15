@@ -77,11 +77,10 @@ const renderCountry = function (data) {
   const region = data.principalSubdivision;
   const language = data.continent;
   const currency = data.countryCode;
-  const symbol = data.locality;
+  const symbol = data.localityInfo.administrative[2].name;
 
   const html = `
     <article class="country ${className}">
-    <img class="country__img" src="${flag}"/>
     <div class="country__data">
       <h3 class="country__name">${name}</h3>
       <h4 class="country__region">${region}</h4>
@@ -483,15 +482,30 @@ const whereAmI = async function () {
     const data = await res.json();
     console.log(data);
     renderCountry(data);
+
+    return `You are in ${dataGeo.city}, ${dataGeo.principalSubdivision}`;
   } catch (err) {
-    // console.error(`${err} 💥`);
-    renderError(`${err}`);
+    console.error(`${err} 💥`);
+    renderError(`${err.message}`);
   }
 };
 
 // whereAmI(52.508, 13.381);
-whereAmI();
-console.log('first');
+// console.log('1: Will get location');
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message}`))
+//   .finally(() => console.log('3: finished getting location'));
+
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(`2: ${city}`);
+  } catch (err) {
+    console.error(`2: ${err.message}`);
+  }
+  console.log('3: finished getting location');
+})();
 
 // ==================================================
 // ===================TRY/CATCH======================
