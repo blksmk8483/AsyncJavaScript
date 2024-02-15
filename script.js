@@ -1,7 +1,7 @@
 'use strict';
 
-// const btn = document.querySelector('.btn-country');
-// const countriesContainer = document.querySelector('.countries');
+const btn = document.querySelector('.btn-country');
+const countriesContainer = document.querySelector('.countries');
 
 // ///////////////////////////////////////
 
@@ -41,13 +41,15 @@
 // //   });
 // // };
 
-// const renderCountry = function (data, className = '') {
-//   const name = data.name.common;
-//   const flag = data.flags.svg;
+// const renderCountry = function (data) {
+//   // const name = data.name.common;
+//   const className = data.country;
+//   const name = data.city;
+//   // const flag = data.flags.svg;
 //   const region = data.region;
-//   const language = Object.values(data.languages)[0];
-//   const currency = Object.values(data.currencies)[0].name;
-//   const symbol = Object.values(data.currencies)[0].symbol;
+//   // const language = Object.values(data.languages)[0];
+//   // const currency = Object.values(data.currencies)[0].name;
+//   // const symbol = Object.values(data.currencies)[0].symbol;
 
 //   const html = `
 //     <article class="country ${className}">
@@ -65,8 +67,36 @@
 // `;
 
 //   countriesContainer.insertAdjacentHTML('beforeend', html);
-//   // countriesContainer.style.opacity = 1;
+//   countriesContainer.style.opacity = 1;
 // };
+
+const renderCountry = function (data) {
+  const className = data.country;
+  const name = data.city;
+  const flag = data.postcode;
+  const region = data.principalSubdivision;
+  const language = data.continent;
+  const currency = data.countryCode;
+  const symbol = data.locality;
+
+  const html = `
+    <article class="country ${className}">
+    <img class="country__img" src="${flag}"/>
+    <div class="country__data">
+      <h3 class="country__name">${name}</h3>
+      <h4 class="country__region">${region}</h4>
+      <p class="country__row"><span>👫</span>${(+flag / 1000000).toFixed(
+        1
+      )} people</p>
+      <p class="country__row"><span>🗣️</span>${language}</p>
+      <p class="country__row"><span>💰</span>${currency} ${symbol}</p>
+    </div>
+  </article>
+`;
+
+  countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = 1;
+};
 
 // // const getCountryAndNeighbour = function (data) {
 // //   // Ajax call country 1
@@ -345,74 +375,107 @@
 // Test data: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to “Fast 3G” in the dev tools Network tab, otherwise images load too fast
 // GOOD LUCK 😀
 
-const wait = function (seconds) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, seconds * 1000);
-  });
-};
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
 
-const imgContainer = document.querySelector('.images');
+// const imgContainer = document.querySelector('.images');
 
-const createImage = function (imgPath) {
+// const createImage = function (imgPath) {
+//   return new Promise(function (resolve, reject) {
+//     const img = document.createElement('img');
+//     img.src = imgPath;
+
+//     img.addEventListener('load', function () {
+//       imgContainer.append(img);
+//       resolve(img);
+//     });
+
+//     img.addEventListener('error', function () {
+//       reject(new Error('Image not found'));
+//     });
+//   });
+// };
+
+// // My terrible but custom error display
+// const ohNoError = function () {
+//   const theButton = document.querySelector('.btn-country');
+//   const newElement = document.createElement('h2');
+//   const newContent = document.createTextNode(
+//     'I am so so sorry... your image path is not correct. 😢'
+//   );
+
+//   newElement.setAttribute(
+//     'style',
+//     'color: blue; background-color: yellow; margin: 12px; padding: 12px; font-size: 84px; text-align: center'
+//   );
+
+//   newElement.appendChild(newContent);
+//   document.body.append(newElement);
+//   theButton.style.display = 'none';
+// };
+
+// let currentImg;
+// // createImage().then(img => (img = 'img/img-1.jpg'));
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 1 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 2 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-3.jpd');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 3 loaded');
+//     return wait(2);
+//   })
+//   .then(() => (currentImg.style.display = 'none'))
+//   .catch(err => console.error(err, ohNoError()));
+// // .catch(err => ohNoError());
+
+// ==================================================
+// ===================ASYNC/AWAIT====================
+// ==================================================
+
+const getPosition = function () {
   return new Promise(function (resolve, reject) {
-    const img = document.createElement('img');
-    img.src = imgPath;
-
-    img.addEventListener('load', function () {
-      imgContainer.append(img);
-      resolve(img);
-    });
-
-    img.addEventListener('error', function () {
-      reject(new Error('Image not found'));
-    });
+    navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 };
 
-// My terrible but custom error display
-const ohNoError = function () {
-  const theButton = document.querySelector('.btn-country');
-  const newElement = document.createElement('h2');
-  const newContent = document.createTextNode(
-    'I am so so sorry... your image path is not correct. 😢'
-  );
+const whereAmI = async function () {
+  const pos = await getPosition();
 
-  newElement.setAttribute(
-    'style',
-    'color: blue; background-color: yellow; margin: 12px; padding: 12px; font-size: 84px; text-align: center'
-  );
+  const { latitude: lat, longitude: lng } = pos.coords;
 
-  newElement.appendChild(newContent);
-  document.body.append(newElement);
-  theButton.style.display = 'none';
+  const resGeo = await fetch(
+    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+  );
+  const dataGeo = await resGeo.json();
+
+  const res = await fetch(
+    `https://api.bigdatacloud.net/data/reverse-geocode-client?${dataGeo.country}`
+  );
+  // console.log(res);
+  const data = await res.json();
+  console.log(data);
+  renderCountry(data);
 };
 
-let currentImg;
-// createImage().then(img => (img = 'img/img-1.jpg'));
-createImage('img/img-1.jpg')
-  .then(img => {
-    currentImg = img;
-    console.log('Image 1 loaded');
-    return wait(2);
-  })
-  .then(() => {
-    currentImg.style.display = 'none';
-    return createImage('img/img-2.jpg');
-  })
-  .then(img => {
-    currentImg = img;
-    console.log('Image 2 loaded');
-    return wait(2);
-  })
-  .then(() => {
-    currentImg.style.display = 'none';
-    return createImage('img/img-3.jpd');
-  })
-  .then(img => {
-    currentImg = img;
-    console.log('Image 3 loaded');
-    return wait(2);
-  })
-  .then(() => (currentImg.style.display = 'none'))
-  .catch(err => console.error(err, ohNoError()));
-// .catch(err => ohNoError());
+// whereAmI(52.508, 13.381);
+whereAmI();
+console.log('first');
