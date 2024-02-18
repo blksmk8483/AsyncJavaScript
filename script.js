@@ -679,4 +679,26 @@ const loadNPause = async function () {
   }
 };
 
-loadNPause();
+// loadNPause();
+
+// =========================================
+// =========================================
+// =========================================
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(async img => await createImage(img));
+    console.log(imgs);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']);
+
+// PART 2
+// 1. Create an async function 'loadAll' that receives an array of imagepaths 'imgArr'
+// 2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+// 3. Check out the 'imgs' array in the console! Is it like you expected?
+// 4. Use a promise combinator function to actually get the images from the array 😉
+// 5. Add the 'parallel' class to all the images (it has some CSS styles)
+// Test data Part 2: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']. To test, turn off the 'loadNPause' function
