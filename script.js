@@ -698,7 +698,7 @@ const loadAll = async function (imgArr) {
   }
 };
 
-loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']);
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
 
 // PART 2
 // 1. Create an async function 'loadAll' that receives an array of imagepaths 'imgArr'
@@ -708,13 +708,13 @@ loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']);
 // 5. Add the 'parallel' class to all the images (it has some CSS styles)
 // Test data Part 2: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']. To test, turn off the 'loadNPause' function
 
-const shape = {
-  radius: 10,
-  diameter() {
-    return this.radius * 2;
-  },
-  perimeter: () => 2 * Math.PI * this.radius,
-};
+// const shape = {
+//   radius: 10,
+//   diameter() {
+//     return this.radius * 2;
+//   },
+//   perimeter: () => 2 * Math.PI * this.radius,
+// };
 
-console.log(shape.diameter());
-console.log(shape.perimeter());
+// console.log(shape.diameter());
+// console.log(shape.perimeter());
