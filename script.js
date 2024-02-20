@@ -656,28 +656,28 @@ const ohNoError = function () {
   theButton.style.display = 'none';
 };
 
-const loadNPause = async function () {
-  try {
-    let img = await createImage('img/img-1.jpg');
-    console.log('Image 1 loaded.');
-    await wait(2);
-    img.style.display = 'none';
+// const loadNPause = async function () {
+//   try {
+//     let img = await createImage('img/img-1.jpg');
+//     console.log('Image 1 loaded.');
+//     await wait(2);
+//     img.style.display = 'none';
 
-    // load image 2
-    img = await createImage('img/img-2.jpg');
-    console.log('Image 2 loaded.');
-    await wait(2);
-    img.style.display = 'none';
+//     // load image 2
+//     img = await createImage('img/img-2.jpg');
+//     console.log('Image 2 loaded.');
+//     await wait(2);
+//     img.style.display = 'none';
 
-    // load image 3
-    img = await createImage('img/immg-3.jpg');
-    console.log('Image 3 loaded.');
-    await wait(2);
-    img.style.display = 'none';
-  } catch (err) {
-    console.error(`${err} 💥`, ohNoError());
-  }
-};
+//     // load image 3
+//     img = await createImage('img/immg-3.jpg');
+//     console.log('Image 3 loaded.');
+//     await wait(2);
+//     img.style.display = 'none';
+//   } catch (err) {
+//     console.error(`${err} 💥`, ohNoError());
+//   }
+// };
 
 // loadNPause();
 
@@ -688,6 +688,11 @@ const loadAll = async function (imgArr) {
   try {
     const imgs = imgArr.map(async img => await createImage(img));
     console.log(imgs);
+
+    const imgsEl = await Promise.all(imgs);
+    console.log(imgsEl);
+
+    imgsEl.forEach(img => img.classList.add('parallel'));
   } catch (err) {
     console.error(err);
   }
@@ -702,3 +707,14 @@ loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']);
 // 4. Use a promise combinator function to actually get the images from the array 😉
 // 5. Add the 'parallel' class to all the images (it has some CSS styles)
 // Test data Part 2: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img- 3.jpg']. To test, turn off the 'loadNPause' function
+
+const shape = {
+  radius: 10,
+  diameter() {
+    return this.radius * 2;
+  },
+  perimeter: () => 2 * Math.PI * this.radius,
+};
+
+console.log(shape.diameter());
+console.log(shape.perimeter());
